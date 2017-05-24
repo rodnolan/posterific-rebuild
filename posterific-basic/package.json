@@ -10,6 +10,7 @@
     "native-base": "2.0.12",
     "react": "~15.4.0",
     "react-native": "0.41.2",
+    "react-native-facebook-account-kit": "^0.6.2",
     "react-native-image-crop-picker": "^0.12.9",
     "react-native-modal": "^2.0.2",
     "react-native-photo-grid": "0.0.2",
