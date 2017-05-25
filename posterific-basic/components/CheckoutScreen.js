@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Image, View, StyleSheet, Text, ToastAndroid } from 'react-native';
 import { Container, Content, Header, Left, Button, Icon, Body, Title } from 'native-base';
 import PosterModel from '../Model/PosterModel';
+import AccountKit from 'react-native-facebook-account-kit';
 
 export default class CheckoutScreen extends React.Component {
 
@@ -18,6 +19,30 @@ export default class CheckoutScreen extends React.Component {
     this.state = {
       poster: this.props.poster,
     };
+  }
+
+  componentWillMount() {
+    AccountKit.configure({
+      countryWhitelist: ["ID", "US", "CA"],
+      defaultCountry: "CA"
+    });
+
+    AccountKit.getCurrentAccessToken()
+      .then((token) => {
+        if (token) {
+          AccountKit.getCurrentAccount()
+            .then((account) => {
+              this.setState({
+                authToken: token,
+                loggedAccount: account
+              });
+              this.logUserPurchase();
+            })
+        } else {
+          console.log('No account logged in')
+        }
+      })
+      .catch((e) => console.log('Access token request failed', e))
   }
 
   render() {
@@ -63,10 +88,10 @@ export default class CheckoutScreen extends React.Component {
               rounded
               style={{ margin: 10 }}
               onPress={() => {
-                this.logUserPurchase();
+                this.loginWithEmail();
               }}
             >
-              <Text style={[styles.btnText]}>Buy Now</Text>
+              <Text style={[styles.btnText]}>Login with Email</Text>
             </Button>
 
           </Content>
@@ -75,6 +100,35 @@ export default class CheckoutScreen extends React.Component {
     )
   }
 
+  loginWithEmail() {
+    AccountKit.loginWithEmail()
+      .then((token) => {
+        this.onLoginSuccess(token)
+      })
+      .catch((e) => {
+        this.onLoginError(e)
+      })
+  }
+  onLoginSuccess(token) {
+    if (!token) {
+      console.warn('User canceled login')
+      this.setState({})
+    } else {
+      AccountKit.getCurrentAccount()
+        .then(
+        (account) => {
+          this.setState({
+            authToken: token,
+            loggedAccount: account
+          })
+          this.logUserPurchase();
+        })
+    }
+  }
+  onLoginError(e) {
+    console.log('Failed to login', e)
+  }
+  
   logUserPurchase() {
     // assume that the "transaction" succeeded and the purchase was made
     ToastAndroid.showWithGravity("Your purchase was successful", ToastAndroid.LONG, ToastAndroid.CENTER);
