@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, View, Image, Text, StyleSheet } from 'react-native';
 import storage from '../Model/PosterificStorage';
+import { LoginButton } from 'react-native-fbsdk';
 
 export default class HomeScreen extends React.Component {
   constructor(props) {
@@ -16,6 +17,23 @@ export default class HomeScreen extends React.Component {
       >
         <Text style={styles.mainTitle}>Posterific!</Text>
         <Text style={styles.subTitle}>Poster making made easy.</Text>
+        
+        <LoginButton
+          onLoginFinished={(error, result) => {
+            if (error) {
+              alert("Login failed with error: " + error.toString());
+            } else if (result.isCancelled) {
+              alert("Login was cancelled");
+            } else {
+              this.props.navigator.push({
+                name: 'PosterList'
+              });
+            }
+          }}
+          onLogoutFinished={() => {
+            this.props.navigator.popToTop();
+          }}
+        />
 
         <TouchableOpacity
           onPress={() => { this.props.navigator.push({name: 'PosterList'}) }}
