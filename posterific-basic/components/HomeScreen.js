@@ -14,20 +14,14 @@ export default class HomeScreen extends React.Component {
         source={require('./../assets/images/login-splash-bg.jpg')}
         style={styles.splashContainer}
       >
-      <Text style={styles.mainTitle}>Posterific!</Text>
+        <Text style={styles.mainTitle}>Posterific!</Text>
         <Text style={styles.subTitle}>Poster making made easy.</Text>
 
         <TouchableOpacity
-          onPress={
-            () => {
-              this.props.navigator.push({
-                name: 'PosterList'
-              });
-            }
-          }
+          onPress={() => { this.props.navigator.push({name: 'PosterList'}) }}
         >
-          <View style={{ flexDirection: 'row', justifyContent: 'center', width: 180, height: 28, backgroundColor: '#4167ae', borderRadius: 3, margin: 20 }}>
-            <Text style={{ margin: 3, color: 'white', fontWeight: 'bold' }}>Get Started</Text>
+          <View style={styles.btnGetStarted}>
+            <Text style={styles.lblGetStarted}>Get Started</Text>
           </View>
         </TouchableOpacity>
 
@@ -53,5 +47,19 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'white',
     marginBottom: 50
+  },
+  btnGetStarted: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: 180,
+    height: 28,
+    backgroundColor: '#4167ae',
+    borderRadius: 3,
+    margin: 20
+  },
+  lblGetStarted: {
+    margin: 3,
+    color: 'white',
+    fontWeight: 'bold'
   }
 });
