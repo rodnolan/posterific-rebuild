@@ -25,8 +25,9 @@ export default class HomeScreen extends React.Component {
               alert("Login failed with error: " + error.toString());
             } else if (result.isCancelled) {
               alert("Login was cancelled");
-            } else {
-              AccessToken.getCurrentAccessToken().then( (data) => {
+              } else {
+                let tmpThis = this;
+                AccessToken.getCurrentAccessToken().then( (data) => {
                 if (data == null) {
                   console.warn("no access token available");
                 } else {
@@ -41,14 +42,14 @@ export default class HomeScreen extends React.Component {
                         key: 'user',
                         rawData: {user: user}
                       });
+                      tmpThis.props.navigator.push({
+                        name: 'PosterList'
+                      });
                     }
                   };
                   let userInfoRequest = new GraphRequest(graphPath, null, requestHandler);
                   new GraphRequestManager().addRequest(userInfoRequest).start();
                 }
-              });
-              this.props.navigator.push({
-                name: 'PosterList'
               });
             }
           }}
