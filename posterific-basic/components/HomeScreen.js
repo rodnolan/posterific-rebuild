@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, View, Image, Text, StyleSheet } from 'react-native';
 import storage from '../Model/PosterificStorage';
-import { LoginButton } from 'react-native-fbsdk';
+import { LoginButton, AccessToken } from 'react-native-fbsdk';
 
 export default class HomeScreen extends React.Component {
   constructor(props) {
@@ -25,6 +25,14 @@ export default class HomeScreen extends React.Component {
             } else if (result.isCancelled) {
               alert("Login was cancelled");
             } else {
+              AccessToken.getCurrentAccessToken().then( (data) => {
+                if (data == null) {
+                  console.warn("no access token available");
+                } else {
+                  console.log("got access token: " + data.accessToken);
+                  console.log("permissions: " + data.permissions);
+                }
+              });
               this.props.navigator.push({
                 name: 'PosterList'
               });
