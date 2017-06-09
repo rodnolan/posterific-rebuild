@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Image, View, StyleSheet, Text, ToastAndroid } from 'react-native';
 import { Container, Content, Header, Left, Button, Icon, Body, Title } from 'native-base';
 import PosterModel from '../Model/PosterModel';
+import AccountKit, {LoginButton} from 'react-native-facebook-account-kit';
+import NativeBaseAccountKitLoginButton from './NativeBaseAccountKitLoginButton';
 
 export default class CheckoutScreen extends React.Component {
 
@@ -11,6 +13,8 @@ export default class CheckoutScreen extends React.Component {
 
   static defaultProps = {
     poster: null,
+    authToken: null,
+    loggedAccount: null
   };
 
   constructor(props) {
@@ -18,6 +22,30 @@ export default class CheckoutScreen extends React.Component {
     this.state = {
       poster: this.props.poster,
     };
+  }
+
+  componentWillMount() {
+    AccountKit.configure({
+      countryWhitelist: ["ID", "US", "CA"],
+      defaultCountry: "CA"
+    });
+
+    AccountKit.getCurrentAccessToken()
+      .then((token) => {
+        if (token) {
+          AccountKit.getCurrentAccount()
+            .then((account) => {
+              this.setState({
+                authToken: token,
+                loggedAccount: account
+              });
+              this.logUserPurchase();
+            })
+        } else {
+          console.log('No account logged in')
+        }
+      })
+      .catch((e) => console.log('Access token request failed', e))
   }
 
   render() {
@@ -55,19 +83,8 @@ export default class CheckoutScreen extends React.Component {
                 />
               </View>
             </View>
-
-            <Button
-              info
-              iconRight
-              block
-              rounded
-              style={{ margin: 10 }}
-              onPress={() => {
-                this.logUserPurchase();
-              }}
-            >
-              <Text style={[styles.btnText]}>Buy Now</Text>
-            </Button>
+            
+            {this.state.loggedAccount ? this.renderUserDetails() : this.renderLoginUI()}
 
           </Content>
         </Container>
@@ -75,6 +92,97 @@ export default class CheckoutScreen extends React.Component {
     )
   }
 
+  renderLoginUI() {
+    return (
+      <View>
+        <Button
+          info
+          iconRight
+          block
+          rounded
+          style={{ margin: 10 }}
+          onPress={() => {
+            this.loginWithEmail();
+          }}
+        >
+          <Text style={[styles.btnText]}>Login with Email</Text>
+          <Icon name="md-mail" />
+        </Button>
+        <NativeBaseAccountKitLoginButton
+          style={{ margin: 10 }}
+          type="phone"
+          onLogin={(token) => this.onLoginSuccess(token)}
+          onError={(e) => this.onLoginError(e)}
+        >
+          <Text style={styles.btnText}>Login with SMS</Text>
+          <Icon name="md-phone-portrait" />
+        </NativeBaseAccountKitLoginButton>
+      </View>
+    );
+  }
+
+  renderUserDetails() {
+    const { id, email, phoneNumber } = this.state.loggedAccount;
+    return (
+      <View>
+        <Text style={styles.akUser}>Account Kit User: {id} {email} { phoneNumber ?  `${phoneNumber.countryCode} ${phoneNumber.number}` : null }</Text>
+        <Button
+          info
+          iconRight
+          block
+          rounded
+          style={{ margin: 10 }}
+          onPress={() => {
+            this.logout();
+          }}
+        >
+          <Text style={[styles.btnText]}>Logout</Text>
+        </Button>
+      </View>
+    );
+  }
+
+  logout() {
+    AccountKit.logout()
+      .then(() => {
+        this.setState({
+          authToken: null,
+          loggedAccount: null
+        })
+      })
+      .catch((e) => console.log('logout failed'))
+  }
+
+  loginWithEmail() {
+    AccountKit.loginWithEmail()
+      .then((token) => {
+        this.onLoginSuccess(token)
+      })
+      .catch((e) => {
+        this.onLoginError(e)
+      })
+  }
+
+  onLoginSuccess(token) {
+    if (!token) {
+      console.warn('User canceled login')
+      this.setState({})
+    } else {
+      AccountKit.getCurrentAccount()
+        .then(
+        (account) => {
+          this.setState({
+            authToken: token,
+            loggedAccount: account
+          })
+          this.logUserPurchase();
+        })
+    }
+  }
+  onLoginError(e) {
+    console.log('Failed to login', e)
+  }
+  
   logUserPurchase() {
     // assume that the "transaction" succeeded and the purchase was made
     ToastAndroid.showWithGravity("Your purchase was successful", ToastAndroid.LONG, ToastAndroid.CENTER);
@@ -116,5 +224,12 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontWeight: 'bold',
   },
-
+  akUser: {
+    fontSize: 15,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    margin: 10,
+    color: '#FFF'
+  },
+  
 });

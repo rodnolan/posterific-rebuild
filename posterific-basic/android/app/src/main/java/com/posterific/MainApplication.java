@@ -6,6 +6,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.react.ReactApplication;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
+import io.underscope.react.fbak.RNAccountKitPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -16,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
-  
+
   private static CallbackManager mCallbackManager = CallbackManager.Factory.create();
 
   protected static CallbackManager getCallbackManager() {
@@ -36,6 +37,7 @@ public class MainApplication extends Application implements ReactApplication {
         return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
           new FBSDKPackage(mCallbackManager),
+          new RNAccountKitPackage(),
           new RNViewShotPackage(),
           new PickerPackage()
         );
