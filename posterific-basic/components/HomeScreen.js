@@ -18,7 +18,7 @@ export default class HomeScreen extends React.Component {
       >
         <Text style={styles.mainTitle}>Posterific!</Text>
         <Text style={styles.subTitle}>Poster making made easy.</Text>
-        
+
         <LoginButton
           onLoginFinished={(error, result) => {
             if (error) {
@@ -34,13 +34,13 @@ export default class HomeScreen extends React.Component {
                   console.log("got access token: " + data.accessToken);
                   console.log("permissions: " + data.permissions);
                   let graphPath = '/me?fields=id,first_name,picture{url}';
-                  let requestHandler = function (error, result) { 
+                  let requestHandler = function (error, result) {
                     if (!error) {
                       console.log(result.id + ', ' + result.first_name + ', ' + result.picture.data.url);
                       let user = new UserModel(result.id, result.first_name, result.picture.data.url);
                       storage.save({
                         key: 'user',
-                        rawData: {user: user}
+                        data: {user: user}
                       });
                       tmpThis.props.navigator.push({
                         name: 'PosterList'
