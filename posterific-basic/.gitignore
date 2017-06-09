@@ -57,5 +57,3 @@ fastlane/screenshots
 *.sublime-project
 *.sublime-workspace
 *.original.js
-
-yarn.lock
