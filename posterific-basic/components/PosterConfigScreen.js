@@ -99,7 +99,7 @@ export default class PosterConfigScreen extends React.Component {
           }
           storage.save({
             key: 'posters',
-            rawData: posters
+            data: posters
           });
 
           switch(btn) {
@@ -118,7 +118,7 @@ export default class PosterConfigScreen extends React.Component {
             case 'ExpiredError':
               storage.save({
                 key: 'posters',
-                rawData: [poster]
+                data: [poster]
               });
               this.redirectOnSave();
               break;
