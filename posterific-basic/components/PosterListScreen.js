@@ -58,7 +58,7 @@ export default class PosterListScreen extends React.Component {
     }
     storage.save({
       key: 'posters',
-      rawData: posters
+      data: posters
     }).then(() => {
       tmpThis.setState({ posters: posters});
     });
