@@ -6,10 +6,12 @@ export default class PosterConfigFooterButtons extends React.Component {
 
   static propTypes = {
     pressHandler: React.PropTypes.func.isRequired,
+    openMessenger: React.PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     pressHandler: null,
+    openMessenger: null,
   };
 
   render() {
@@ -33,6 +35,7 @@ export default class PosterConfigFooterButtons extends React.Component {
         <TouchableOpacity onPress={
           () => {
             console.log('messenger button pressed');
+            this.props.openMessenger()
           }
         }>
           <Image source={require('./../assets/images/facebook-messenger.png')} />
