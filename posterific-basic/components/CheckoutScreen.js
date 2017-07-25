@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { Image, View, StyleSheet, Text, ToastAndroid } from 'react-native';
+import { Image, View, StyleSheet, Text, ToastAndroid, Dimensions } from 'react-native';
 import { Container, Content, Header, Left, Button, Icon, Body, Title } from 'native-base';
 import PosterModel from '../Model/PosterModel';
 import AccountKit, {LoginButton} from 'react-native-facebook-account-kit';
 import NativeBaseAccountKitLoginButton from './NativeBaseAccountKitLoginButton';
+
+let { height, width } = Dimensions.get("window");
+
 
 export default class CheckoutScreen extends React.Component {
 
@@ -193,6 +196,8 @@ const styles = StyleSheet.create({
   splashContainer: {
     flex: 1,
     flexDirection: 'column',
+    height: height,
+    width: width,
   },
   contentContainer: {
     flex: 1,

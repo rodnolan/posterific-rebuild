@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, View, Image, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, View, Image, Text, StyleSheet, Dimensions } from 'react-native';
 import storage from '../Model/PosterificStorage';
 import { LoginButton, AccessToken, GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
 import UserModel from '../Model/UserModel';
+
+//set the default dimension
+let { height, width } = Dimensions.get("window");
 
 export default class HomeScreen extends React.Component {
   constructor(props) {
@@ -78,6 +81,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
+    height: height,
+    width: width,
   },
   mainTitle: {
     fontSize: 72,
